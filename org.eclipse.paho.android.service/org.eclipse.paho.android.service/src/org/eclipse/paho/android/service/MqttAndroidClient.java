@@ -20,6 +20,8 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -416,7 +418,7 @@ public class MqttAndroidClient extends BroadcastReceiver implements
 		mqttService.setTraceCallbackId(clientHandle);
 		mqttService.setAppRunning(true);
 		//store the app package name and service notification callback class
-		if (this.serviceNTFCallbackCls!=null) {
+		if (this.serviceNTFCallbackCls!=null&&mqttService.makeNTFCallBackInstance(this.serviceNTFCallbackCls)) {
 			ServiceNotificationCallbackStore store=mqttService.getServiceNTFCallbackStore();
 			if(store!=null) {
 				store.setAppServiceNTFCallbackClass(mqttService.getApplicationInfo().packageName, serviceNTFCallbackCls);

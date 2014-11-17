@@ -260,7 +260,13 @@ class MqttConnection implements MqttCallback {
 
 					// if connect fail ,try reconnect.
 					if(service.isOnline()){
-						connect(connectOptions, internel_invocationContext,connectActivityToken);
+						try {
+							Thread.sleep(30000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						connect(connectOptions, internel_invocationContext,
+							connectActivityToken);
 					}
 
 				}
@@ -867,20 +873,19 @@ class MqttConnection implements MqttCallback {
 		 */
 		Log.i("MqttConnection","Get a message="+new String(message.getPayload()));
 		//only if app running, call back to Activity
-		if (service.isAppRunning()) {		
+		//if (service.isAppRunning()) {		
 		Bundle resultBundle = messageToBundle(messageId, topic, message);
 		resultBundle.putString(MqttServiceConstants.CALLBACK_ACTION,
 				MqttServiceConstants.MESSAGE_ARRIVED_ACTION);
 		resultBundle.putString(MqttServiceConstants.CALLBACK_MESSAGE_ID,
 				messageId);
 		service.callbackToActivity(clientHandle, Status.OK, resultBundle);
-		} 
-		else {
-		//otherwise, service will callback the service NTF callback
+		//}
+		
+		//in any case, service will callback the service NTF callback
 		Log.i("MqttConnection",
 				"Notify message=" + new String(message.getPayload()));
 		service.callbackToNotification(topic, message);
-		}
 		
 	}
 
@@ -988,7 +993,7 @@ class MqttConnection implements MqttCallback {
 			return;
 		}
 
-		if (disconnected) {
+		if (disconnected && !cleanSession) {
 			// use the activityToke the same with action connect
 			service.traceDebug(TAG,"Do Real Reconnect!");
 			final Bundle resultBundle = new Bundle();
@@ -1025,7 +1030,11 @@ class MqttConnection implements MqttCallback {
 
 						doAfterConnectFail(resultBundle);
 						
-						//reconnect fail , try reconnect . check network in reconnect function;
+						try {
+							Thread.sleep(30000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 						service.traceDebug(TAG,"Reconnect Fail,Reconnect!");
 						reconnect();
 						

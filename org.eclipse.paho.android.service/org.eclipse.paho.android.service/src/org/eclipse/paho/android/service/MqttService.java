@@ -408,11 +408,12 @@ public class MqttService extends Service implements MqttTraceHandler {
 		// delete connection persistence if disconnect by user.
 		persistence.deleteConnection(modelConnections.get(clientHandle));
 		modelConnections.remove(clientHandle);
-    // the activity has finished using us, so we can stop the service
-    // the activities are bound with BIND_AUTO_CREATE, so the service will
-    // remain around until the last activity disconnects
-    stopSelf();
-  }
+
+		// the activity has finished using us, so we can stop the service
+		// the activities are bound with BIND_AUTO_CREATE, so the service will
+		// remain around until the last activity disconnects
+		//stopSelf();
+	}
 
   /**
    * Disconnect from the server
@@ -432,11 +433,11 @@ public class MqttService extends Service implements MqttTraceHandler {
     client.disconnect(quiesceTimeout, invocationContext, activityToken);
     connections.remove(clientHandle);
 
-    // the activity has finished using us, so we can stop the service
-    // the activities are bound with BIND_AUTO_CREATE, so the service will
-    // remain around until the last activity disconnects
-    stopSelf();
-  }
+		// the activity has finished using us, so we can stop the service
+		// the activities are bound with BIND_AUTO_CREATE, so the service will
+		// remain around until the last activity disconnects
+		//stopSelf();
+	}
 
   /**
    * Get the status of a specific client
@@ -669,12 +670,9 @@ public class MqttService extends Service implements MqttTraceHandler {
 		serviceNTFCallbackCls = serviceNTFCallbackStore.getAppServiceNTFCallbackClass(appPackageName);
 
 		if (serviceNTFCallbackCls != null) {
-
-        if (isAppRunning == false) {
 			//new serviceNTFCallback instance
-			    makeNTFCallBackInstance(serviceNTFCallbackCls);
-			   }
-			   //try to reconnect
+			if(makeNTFCallBackInstance(serviceNTFCallbackCls)) {
+				//try to reconnect
 				try {
 					List<ModelConnectionPersistence> l = persistence
 							.restoreConnections(this.getApplicationContext());
@@ -698,6 +696,7 @@ public class MqttService extends Service implements MqttTraceHandler {
 				} catch (MqttException e) {
 					Log.e("MqttService", e.toString());
 				}
+			}
 			
 		}
 	}
