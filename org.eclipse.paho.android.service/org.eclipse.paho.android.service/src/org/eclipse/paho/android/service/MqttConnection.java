@@ -113,7 +113,7 @@ class MqttConnection implements MqttCallback {
 	private String reconnectActivityToken = null;
 
 	// our client object - instantiated on connect
-	private MqttAsyncClient myClient = null;
+	private MqttWebSocketAsyncClient myClient = null;
 
 	// our (parent) service object
 	private MqttService service = null;
@@ -279,7 +279,7 @@ class MqttConnection implements MqttCallback {
 			
 			// if myClient is null, then create a new connection
 			else {
-				myClient = new MqttAsyncClient(serverURI, clientId,
+				myClient = new MqttWebSocketAsyncClient(serverURI, clientId,
 						persistence, new AlarmPingSender(service));
 				myClient.setCallback(this);
 

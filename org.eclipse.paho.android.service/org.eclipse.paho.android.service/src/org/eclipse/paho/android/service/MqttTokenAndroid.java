@@ -80,7 +80,8 @@ class MqttTokenAndroid implements IMqttToken {
   public void waitForCompletion() throws MqttException, MqttSecurityException {
     synchronized (waitObject) {
       try {
-        waitObject.wait();
+    	  if(!this.isComplete)
+    		  waitObject.wait();
       }
       catch (InterruptedException e) {
         // do nothing
